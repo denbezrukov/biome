@@ -66,6 +66,11 @@ impl SyntaxNode {
     }
 
     #[inline]
+    pub fn language_id(&self) -> u8 {
+        self.green().language_id()
+    }
+
+    #[inline]
     pub(super) fn offset(&self) -> TextSize {
         self.data().offset()
     }

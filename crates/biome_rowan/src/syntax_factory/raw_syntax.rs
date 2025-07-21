@@ -22,6 +22,7 @@ impl<K: SyntaxKind> RawSyntaxNode<K> {
     {
         Self {
             raw: GreenNode::new(
+                K::LANGUAGE_ID,
                 kind.to_raw(),
                 slots
                     .into_iter()

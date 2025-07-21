@@ -12,6 +12,7 @@ pub struct RawLanguage;
 impl Language for RawLanguage {
     type Kind = RawLanguageKind;
     type Root = RawLanguageRoot;
+    const LANGUAGE_ID: u8 = 0;
 }
 
 #[doc(hidden)]
@@ -44,6 +45,7 @@ pub enum RawLanguageKind {
 impl SyntaxKind for RawLanguageKind {
     const TOMBSTONE: Self = Self::TOMBSTONE;
     const EOF: Self = Self::EOF;
+    const LANGUAGE_ID: u8 = 0;
 
     fn is_bogus(&self) -> bool {
         self == &Self::BOGUS

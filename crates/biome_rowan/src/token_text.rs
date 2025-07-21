@@ -33,7 +33,7 @@ impl PartialOrd for TokenText {
 impl TokenText {
     #[inline]
     pub fn new_raw(kind: crate::RawSyntaxKind, text: &str) -> Self {
-        Self::new(GreenToken::new_raw(kind, text))
+        Self::new(GreenToken::new_raw(0, kind, text))
     }
 
     pub(crate) fn new(token: GreenToken) -> Self {

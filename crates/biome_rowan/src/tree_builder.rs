@@ -79,7 +79,7 @@ impl<L: Language, S: SyntaxFactory<Kind = L::Kind>> TreeBuilder<'_, L, S> {
     /// Adds new token to the current branch.
     #[inline]
     pub fn token(&mut self, kind: L::Kind, text: &str) -> &mut Self {
-        let (hash, token) = self.cache.token(kind.to_raw(), text);
+        let (hash, token) = self.cache.token(L::LANGUAGE_ID, kind.to_raw(), text);
         self.children.push((hash, token.into()));
         self
     }
@@ -95,7 +95,7 @@ impl<L: Language, S: SyntaxFactory<Kind = L::Kind>> TreeBuilder<'_, L, S> {
     ) {
         let (hash, token) = self
             .cache
-            .token_with_trivia(kind.to_raw(), text, leading, trailing);
+            .token_with_trivia(L::LANGUAGE_ID, kind.to_raw(), text, leading, trailing);
         self.children.push((hash, token.into()));
     }
 
@@ -115,7 +115,7 @@ impl<L: Language, S: SyntaxFactory<Kind = L::Kind>> TreeBuilder<'_, L, S> {
         let raw_kind = kind.to_raw();
 
         let slots = &self.children[first_child..];
-        let node_entry = self.cache.node(raw_kind, slots);
+        let node_entry = self.cache.node(L::LANGUAGE_ID, raw_kind, slots);
 
         let mut build_node = || {
             let children = ParsedChildren::new(&mut self.children, first_child);

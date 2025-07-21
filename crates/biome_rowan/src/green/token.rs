@@ -17,6 +17,7 @@ struct GreenTokenHead {
     kind: RawSyntaxKind,
     leading: GreenTrivia,
     trailing: GreenTrivia,
+    language_id: u8,
     #[cfg(feature = "countme")]
     _c: countme::Count<GreenToken>,
 }
@@ -135,6 +136,11 @@ impl GreenTokenData {
     }
 
     #[inline]
+    pub fn language_id(&self) -> u8 {
+        self.data.header.language_id
+    }
+
+    #[inline]
     pub fn leading_trivia(&self) -> &GreenTrivia {
         &self.data.header.leading
     }
@@ -147,15 +153,16 @@ impl GreenTokenData {
 
 impl GreenToken {
     #[inline]
-    pub fn new_raw(kind: RawSyntaxKind, text: &str) -> Self {
+    pub fn new_raw(language_id: u8, kind: RawSyntaxKind, text: &str) -> Self {
         let leading = GreenTrivia::empty();
         let trailing = leading.clone();
 
-        Self::with_trivia(kind, text, leading, trailing)
+        Self::with_trivia(language_id, kind, text, leading, trailing)
     }
 
     #[inline]
     pub fn with_trivia(
+        language_id: u8,
         kind: RawSyntaxKind,
         text: &str,
         leading: GreenTrivia,
@@ -165,6 +172,7 @@ impl GreenToken {
             kind,
             leading,
             trailing,
+            language_id,
             #[cfg(feature = "countme")]
             _c: countme::Count::new(),
         };

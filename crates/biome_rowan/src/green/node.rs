@@ -22,6 +22,7 @@ use crate::{
 pub(super) struct GreenNodeHead {
     kind: RawSyntaxKind,
     text_len: TextSize,
+    language_id: u8,
     #[cfg(feature = "countme")]
     _c: countme::Count<GreenNode>,
 }
@@ -171,6 +172,11 @@ impl GreenNodeData {
         self.header().text_len
     }
 
+    #[inline]
+    pub fn language_id(&self) -> u8 {
+        self.header().language_id
+    }
+
     /// Children of this node.
     #[inline]
     pub fn children(&self) -> Children<'_> {
@@ -221,7 +227,7 @@ impl GreenNodeData {
             .collect();
 
         slots.splice(range, replace_with);
-        GreenNode::new(self.kind(), slots)
+        GreenNode::new(self.language_id(), self.kind(), slots)
     }
 }
 
@@ -241,7 +247,7 @@ impl ops::Deref for GreenNode {
 impl GreenNode {
     /// Creates new Node.
     #[inline]
-    pub fn new<I>(kind: RawSyntaxKind, slots: I) -> Self
+    pub fn new<I>(language_id: u8, kind: RawSyntaxKind, slots: I) -> Self
     where
         I: IntoIterator<Item = Option<GreenElement>>,
         I::IntoIter: ExactSizeIterator,
@@ -265,6 +271,7 @@ impl GreenNode {
             GreenNodeHead {
                 kind,
                 text_len: 0.into(),
+                language_id,
                 #[cfg(feature = "countme")]
                 _c: countme::Count::new(),
             },

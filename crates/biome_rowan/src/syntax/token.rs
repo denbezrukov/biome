@@ -566,6 +566,16 @@ impl<L: Language> From<cursor::SyntaxToken> for SyntaxToken<L> {
     }
 }
 
+impl<L: Language> SyntaxToken<L> {
+    fn cast(raw: cursor::SyntaxToken) -> Option<Self> {
+        if raw.language_id() == L::LANGUAGE_ID {
+            Some(Self { raw, _p: PhantomData })
+        } else {
+            None
+        }
+    }
+}
+
 /// A syntax token that contains an offset
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct SyntaxTokenWithOffset<L: Language> {

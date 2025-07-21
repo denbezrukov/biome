@@ -78,6 +78,11 @@ impl SyntaxToken {
     }
 
     #[inline]
+    pub fn language_id(&self) -> u8 {
+        self.green().language_id()
+    }
+
+    #[inline]
     pub fn text_range(&self) -> TextRange {
         self.data().text_range()
     }

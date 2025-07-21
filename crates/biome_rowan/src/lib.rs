@@ -47,6 +47,7 @@ pub use crate::{
         SyntaxElementChildren, SyntaxKind, SyntaxList, SyntaxNode, SyntaxNodeChildren,
         SyntaxNodeOptionExt, SyntaxNodeWithOffset, SyntaxRewriter, SyntaxSlot, SyntaxSlots,
         SyntaxToken, SyntaxTokenWithOffset, SyntaxTriviaPiece, SyntaxTriviaPieceComments,
+        AnySyntaxNode, AnySyntaxToken,
         TriviaPiece, TriviaPieceKind, VisitNodeSignal, chain_trivia_pieces,
         trim_leading_trivia_pieces, trim_trailing_trivia_pieces,
     },

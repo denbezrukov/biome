@@ -36,6 +36,7 @@ impl<L: Language> SyntaxNode<L> {
         I::IntoIter: ExactSizeIterator,
     {
         Self::from(cursor::SyntaxNode::new_root(GreenNode::new(
+            L::LANGUAGE_ID,
             kind.to_raw(),
             slots.into_iter().map(|slot| {
                 slot.map(|element| match element {
@@ -270,6 +271,10 @@ impl<L: Language> SyntaxNode<L> {
             raw: self.raw.children(),
             _p: PhantomData,
         }
+    }
+
+    pub fn raw_children(&self) -> impl Iterator<Item = AnySyntaxNode> {
+        self.raw.children().map(|node| AnySyntaxNode { raw: node })
     }
 
     /// Returns an iterator over all the slots of this syntax node.
@@ -815,6 +820,16 @@ impl<L: Language> From<cursor::SyntaxNode> for SyntaxNode<L> {
     }
 }
 
+impl<L: Language> SyntaxNode<L> {
+    fn cast(raw: cursor::SyntaxNode) -> Option<Self> {
+        if raw.language_id() == L::LANGUAGE_ID {
+            Some(Self { raw, _p: PhantomData })
+        } else {
+            None
+        }
+    }
+}
+
 /// Language-agnostic representation of the root node of a syntax tree, can be
 /// sent or shared between threads
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -859,6 +874,36 @@ impl EmbeddedSendNode {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct AnySyntaxNode {
+    raw: cursor::SyntaxNode,
+}
+
+impl AnySyntaxNode {
+    pub fn language_id(&self) -> u8 {
+        self.raw.language_id()
+    }
+
+    pub fn cast<L: Language>(self) -> Option<SyntaxNode<L>> {
+        SyntaxNode::cast(self.raw)
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct AnySyntaxToken {
+    raw: cursor::SyntaxToken,
+}
+
+impl AnySyntaxToken {
+    pub fn language_id(&self) -> u8 {
+        self.raw.language_id()
+    }
+
+    pub fn cast<L: Language>(self) -> Option<SyntaxToken<L>> {
+        SyntaxToken::cast(self.raw)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct SyntaxNodeChildren<L: Language> {
     raw: cursor::SyntaxNodeChildren,
@@ -868,7 +913,12 @@ pub struct SyntaxNodeChildren<L: Language> {
 impl<L: Language> Iterator for SyntaxNodeChildren<L> {
     type Item = SyntaxNode<L>;
     fn next(&mut self) -> Option<Self::Item> {
-        self.raw.next().map(SyntaxNode::from)
+        while let Some(node) = self.raw.next() {
+            if let Some(node) = SyntaxNode::cast(node) {
+                return Some(node);
+            }
+        }
+        None
     }
 }
 
@@ -896,7 +946,21 @@ impl<L: Language> Default for SyntaxElementChildren<L> {
 impl<L: Language> Iterator for SyntaxElementChildren<L> {
     type Item = SyntaxElement<L>;
     fn next(&mut self) -> Option<Self::Item> {
-        self.raw.next().map(NodeOrToken::from)
+        while let Some(elem) = self.raw.next() {
+            match elem {
+                NodeOrToken::Node(node) => {
+                    if let Some(n) = SyntaxNode::cast(node) {
+                        return Some(SyntaxElement::Node(n));
+                    }
+                }
+                NodeOrToken::Token(tok) => {
+                    if let Some(t) = SyntaxToken::cast(tok) {
+                        return Some(SyntaxElement::Token(t));
+                    }
+                }
+            }
+        }
+        None
     }
 }
 
@@ -914,7 +978,19 @@ impl<L: Language> Preorder<L> {
 impl<L: Language> Iterator for Preorder<L> {
     type Item = WalkEvent<SyntaxNode<L>>;
     fn next(&mut self) -> Option<Self::Item> {
-        self.raw.next().map(|it| it.map(SyntaxNode::from))
+        while let Some(ev) = self.raw.next() {
+            match ev {
+                WalkEvent::Enter(node) | WalkEvent::Leave(node) => {
+                    if let Some(node) = SyntaxNode::cast(node) {
+                        return Some(match ev {
+                            WalkEvent::Enter(_) => WalkEvent::Enter(node),
+                            WalkEvent::Leave(_) => WalkEvent::Leave(node),
+                        });
+                    }
+                }
+            }
+        }
+        None
     }
 }
 
@@ -926,7 +1002,12 @@ pub struct PreorderTokens<L: Language> {
 impl<L: Language> Iterator for PreorderTokens<L> {
     type Item = SyntaxToken<L>;
     fn next(&mut self) -> Option<Self::Item> {
-        self.raw.next().map(SyntaxToken::from)
+        while let Some(tok) = self.raw.next() {
+            if let Some(t) = SyntaxToken::cast(tok) {
+                return Some(t);
+            }
+        }
+        None
     }
 }
 
@@ -944,7 +1025,31 @@ impl<L: Language> PreorderWithTokens<L> {
 impl<L: Language> Iterator for PreorderWithTokens<L> {
     type Item = WalkEvent<SyntaxElement<L>>;
     fn next(&mut self) -> Option<Self::Item> {
-        self.raw.next().map(|it| it.map(SyntaxElement::from))
+        while let Some(ev) = self.raw.next() {
+            match ev {
+                WalkEvent::Enter(NodeOrToken::Node(node)) => {
+                    if let Some(n) = SyntaxNode::cast(node) {
+                        return Some(WalkEvent::Enter(SyntaxElement::Node(n)));
+                    }
+                }
+                WalkEvent::Enter(NodeOrToken::Token(tok)) => {
+                    if let Some(t) = SyntaxToken::cast(tok) {
+                        return Some(WalkEvent::Enter(SyntaxElement::Token(t)));
+                    }
+                }
+                WalkEvent::Leave(NodeOrToken::Node(node)) => {
+                    if let Some(n) = SyntaxNode::cast(node) {
+                        return Some(WalkEvent::Leave(SyntaxElement::Node(n)));
+                    }
+                }
+                WalkEvent::Leave(NodeOrToken::Token(tok)) => {
+                    if let Some(t) = SyntaxToken::cast(tok) {
+                        return Some(WalkEvent::Leave(SyntaxElement::Token(t)));
+                    }
+                }
+            }
+        }
+        None
     }
 }
 
@@ -992,15 +1097,19 @@ impl<L: Language> SyntaxSlot<L> {
             Self::Empty { .. } => None,
         }
     }
+
+    fn from_raw(slot: cursor::SyntaxSlot) -> Option<Self> {
+        match slot {
+            cursor::SyntaxSlot::Node(node) => SyntaxNode::cast(node).map(Self::Node),
+            cursor::SyntaxSlot::Token(tok) => SyntaxToken::cast(tok).map(Self::Token),
+            cursor::SyntaxSlot::Empty { index, .. } => Some(Self::Empty { index }),
+        }
+    }
 }
 
 impl<L: Language> From<cursor::SyntaxSlot> for SyntaxSlot<L> {
     fn from(raw: cursor::SyntaxSlot) -> Self {
-        match raw {
-            cursor::SyntaxSlot::Node(node) => Self::Node(node.into()),
-            cursor::SyntaxSlot::Token(token) => Self::Token(token.into()),
-            cursor::SyntaxSlot::Empty { index, .. } => Self::Empty { index },
-        }
+        SyntaxSlot::from_raw::<L>(raw).expect("invalid slot language id")
     }
 }
 
@@ -1016,7 +1125,12 @@ impl<L: Language> Iterator for SyntaxSlots<L> {
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-        self.raw.next().map(SyntaxSlot::from)
+        while let Some(slot) = self.raw.next() {
+            if let Some(converted) = SyntaxSlot::from_raw::<L>(slot) {
+                return Some(converted);
+            }
+        }
+        None
     }
 
     #[inline(always)]
@@ -1029,12 +1143,12 @@ impl<L: Language> Iterator for SyntaxSlots<L> {
     where
         Self: Sized,
     {
-        self.raw.last().map(SyntaxSlot::from)
+        self.raw.last().and_then(SyntaxSlot::from_raw::<L>)
     }
 
     #[inline]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
-        self.raw.nth(n).map(SyntaxSlot::from)
+        self.raw.nth(n).and_then(SyntaxSlot::from_raw::<L>)
     }
 }
 
@@ -1050,12 +1164,17 @@ impl<L: Language> ExactSizeIterator for SyntaxSlots<L> {
 impl<L: Language> DoubleEndedIterator for SyntaxSlots<L> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
-        self.raw.next_back().map(SyntaxSlot::from)
+        while let Some(slot) = self.raw.next_back() {
+            if let Some(converted) = SyntaxSlot::from_raw::<L>(slot) {
+                return Some(converted);
+            }
+        }
+        None
     }
 
     #[inline]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
-        self.raw.nth_back(n).map(SyntaxSlot::from)
+        self.raw.nth_back(n).and_then(SyntaxSlot::from_raw::<L>)
     }
 }
 

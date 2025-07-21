@@ -193,15 +193,16 @@ impl Not for Generation {
     }
 }
 
-fn token_hash_of(kind: RawSyntaxKind, text: &str) -> u64 {
+fn token_hash_of(language_id: u8, kind: RawSyntaxKind, text: &str) -> u64 {
     let mut h = FxHasher::default();
+    language_id.hash(&mut h);
     kind.hash(&mut h);
     text.hash(&mut h);
     h.finish()
 }
 
 fn token_hash(token: &GreenTokenData) -> u64 {
-    token_hash_of(token.kind(), token.text())
+    token_hash_of(token.language_id(), token.kind(), token.text())
 }
 
 fn element_id(elem: GreenElementRef<'_>) -> *const () {
@@ -223,6 +224,7 @@ impl NodeCache {
     /// * Insert a node if it isn't present in the cache
     pub(crate) fn node(
         &mut self,
+        language_id: u8,
         kind: RawSyntaxKind,
         children: &[(u64, GreenElement)],
     ) -> NodeCacheNodeEntryMut {
@@ -232,6 +234,7 @@ impl NodeCache {
 
         let hash = {
             let mut h = FxHasher::default();
+            language_id.hash(&mut h);
             kind.hash(&mut h);
             for &(hash, _) in children {
                 if hash == Self::UNCACHED_NODE_HASH {
@@ -279,22 +282,24 @@ impl NodeCache {
                 original_kind: kind,
                 hash,
                 generation: self.generation,
+                language_id,
             }),
         }
     }
 
-    pub(crate) fn token(&mut self, kind: RawSyntaxKind, text: &str) -> (u64, GreenToken) {
-        self.token_with_trivia(kind, text, &[], &[])
+    pub(crate) fn token(&mut self, language_id: u8, kind: RawSyntaxKind, text: &str) -> (u64, GreenToken) {
+        self.token_with_trivia(language_id, kind, text, &[], &[])
     }
 
     pub(crate) fn token_with_trivia(
         &mut self,
+        language_id: u8,
         kind: RawSyntaxKind,
         text: &str,
         leading: &[TriviaPiece],
         trailing: &[TriviaPiece],
     ) -> (u64, GreenToken) {
-        let hash = token_hash_of(kind, text);
+        let hash = token_hash_of(language_id, kind, text);
 
         let entry = self.tokens.raw_entry_mut().from_hash(hash, |token| {
             token.0.value().kind() == kind && token.0.value().text() == text
@@ -309,7 +314,7 @@ impl NodeCache {
                 let leading = self.trivia.get(self.generation, leading);
                 let trailing = self.trivia.get(self.generation, trailing);
 
-                let token = GreenToken::with_trivia(kind, text, leading, trailing);
+                let token = GreenToken::with_trivia(language_id, kind, text, leading, trailing);
                 let key = CachedToken(GenerationalPointer::new(token.clone(), self.generation));
                 entry.insert_with_hasher(hash, key, (), |t| token_hash(t.0.value()));
                 token
@@ -374,6 +379,7 @@ pub(crate) struct VacantNodeEntry<'a> {
     original_kind: RawSyntaxKind,
     raw_entry: RawVacantEntryMut<'a, CachedNode, (), BuildHasherDefault<FxHasher>>,
     generation: Generation,
+    language_id: u8,
 }
 
 /// Represents an entry of a cached node.
@@ -538,7 +544,7 @@ mod tests {
 
         assert_eq!(token_hash(&t1), token_hash(&t2));
 
-        let t3 = GreenToken::new_raw(kind, "let");
+        let t3 = GreenToken::new_raw(0, kind, "let");
         assert_ne!(token_hash(&t1), token_hash(&t3));
 
         let t4 = GreenToken::with_trivia(

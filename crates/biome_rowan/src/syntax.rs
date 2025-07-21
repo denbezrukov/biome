@@ -25,6 +25,7 @@ pub use trivia::{
 pub trait SyntaxKind: fmt::Debug + PartialEq + Copy {
     const TOMBSTONE: Self;
     const EOF: Self;
+    const LANGUAGE_ID: u8;
 
     /// Returns `true` if this is a kind of a bogus node.
     fn is_bogus(&self) -> bool;
@@ -60,6 +61,7 @@ pub trait SyntaxKind: fmt::Debug + PartialEq + Copy {
 pub trait Language: Sized + Clone + Copy + fmt::Debug + Eq + Ord + std::hash::Hash {
     type Kind: SyntaxKind;
     type Root: AstNode<Language = Self> + Clone + Eq + fmt::Debug;
+    const LANGUAGE_ID: u8;
 }
 
 /// A list of `SyntaxNode`s and/or `SyntaxToken`s

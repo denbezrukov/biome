@@ -71,6 +71,14 @@ impl GreenElement {
             Self::Node(node) => node.text_len(),
         }
     }
+
+    #[inline]
+    pub fn language_id(&self) -> u8 {
+        match self {
+            Self::Token(token) => token.language_id(),
+            Self::Node(node) => node.language_id(),
+        }
+    }
 }
 
 impl GreenElementRef<'_> {
@@ -89,6 +97,14 @@ impl GreenElementRef<'_> {
         match self {
             NodeOrToken::Node(it) => it.text_len(),
             NodeOrToken::Token(it) => it.text_len(),
+        }
+    }
+
+    #[inline]
+    pub fn language_id(&self) -> u8 {
+        match self {
+            NodeOrToken::Node(it) => it.language_id(),
+            NodeOrToken::Token(it) => it.language_id(),
         }
     }
 }
