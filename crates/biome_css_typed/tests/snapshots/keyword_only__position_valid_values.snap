@@ -1,0 +1,32 @@
+---
+source: crates/biome_css_typed/tests/keyword_only.rs
+assertion_line: 41
+expression: results
+---
+[
+    Ok(
+        Position(
+            Static,
+        ),
+    ),
+    Ok(
+        Position(
+            Relative,
+        ),
+    ),
+    Ok(
+        Position(
+            Absolute,
+        ),
+    ),
+    Ok(
+        Position(
+            Fixed,
+        ),
+    ),
+    Ok(
+        Position(
+            Sticky,
+        ),
+    ),
+]

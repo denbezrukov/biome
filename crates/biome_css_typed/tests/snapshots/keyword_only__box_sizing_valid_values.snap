@@ -1,0 +1,17 @@
+---
+source: crates/biome_css_typed/tests/keyword_only.rs
+assertion_line: 102
+expression: results
+---
+[
+    Ok(
+        BoxSizing(
+            ContentBox,
+        ),
+    ),
+    Ok(
+        BoxSizing(
+            BorderBox,
+        ),
+    ),
+]

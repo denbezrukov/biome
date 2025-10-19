@@ -1,8 +1,14 @@
-use super::{padding::PaddingShorthand, visibility::Visibility};
+use super::{
+    box_sizing::BoxSizing, clear::Clear, float::Float, padding::PaddingShorthand,
+    position::Position, visibility::Visibility,
+};
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum PropertyValue {
+pub enum TypedPropertyValue {
+    Padding(PaddingShorthand),
     Visibility(Visibility),
-    PaddingShorthand(PaddingShorthand),
-    // Display(super::display::Display),  // later
+    Position(Position),
+    Float(Float),
+    Clear(Clear),
+    BoxSizing(BoxSizing),
 }

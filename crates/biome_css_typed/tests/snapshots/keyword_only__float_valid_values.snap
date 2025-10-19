@@ -1,0 +1,32 @@
+---
+source: crates/biome_css_typed/tests/keyword_only.rs
+assertion_line: 59
+expression: results
+---
+[
+    Ok(
+        Float(
+            Left,
+        ),
+    ),
+    Ok(
+        Float(
+            Right,
+        ),
+    ),
+    Ok(
+        Float(
+            None,
+        ),
+    ),
+    Ok(
+        Float(
+            InlineStart,
+        ),
+    ),
+    Ok(
+        Float(
+            InlineEnd,
+        ),
+    ),
+]

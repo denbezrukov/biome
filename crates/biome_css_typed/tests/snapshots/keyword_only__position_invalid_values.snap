@@ -1,0 +1,31 @@
+---
+source: crates/biome_css_typed/tests/keyword_only.rs
+assertion_line: 50
+expression: results
+---
+[
+    Err(
+        CssPropertyDiagnostic {
+            kind: InvalidValue,
+            range: Some(
+                4..12,
+            ),
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: UnexpectedToken,
+            range: Some(
+                21..26,
+            ),
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: InvalidValue,
+            range: Some(
+                14..17,
+            ),
+        },
+    ),
+]

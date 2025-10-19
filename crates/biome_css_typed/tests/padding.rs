@@ -1,15 +1,14 @@
 #[path = "utils.rs"]
 mod utils;
 
+use biome_css_typed::api;
 use biome_css_typed::diag::CssPropertyDiagnostic;
-use biome_css_typed::props::padding::PaddingShorthand;
-use biome_css_typed::props::value::PropertyValue;
+use biome_css_typed::props::value::TypedPropertyValue;
 use utils::parse_generic_property;
 
-fn parse_padding(source: &str) -> Result<PropertyValue, CssPropertyDiagnostic> {
+fn parse_padding(source: &str) -> Result<TypedPropertyValue, CssPropertyDiagnostic> {
     let property = parse_generic_property("padding", source);
-    let value = property.value();
-    PaddingShorthand::parse(&value)
+    api::parse_property_typed(&property)
 }
 
 #[test]

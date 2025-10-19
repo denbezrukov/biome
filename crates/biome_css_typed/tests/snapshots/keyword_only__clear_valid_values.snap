@@ -1,0 +1,37 @@
+---
+source: crates/biome_css_typed/tests/keyword_only.rs
+assertion_line: 84
+expression: results
+---
+[
+    Ok(
+        Clear(
+            None,
+        ),
+    ),
+    Ok(
+        Clear(
+            Left,
+        ),
+    ),
+    Ok(
+        Clear(
+            Right,
+        ),
+    ),
+    Ok(
+        Clear(
+            Both,
+        ),
+    ),
+    Ok(
+        Clear(
+            InlineStart,
+        ),
+    ),
+    Ok(
+        Clear(
+            InlineEnd,
+        ),
+    ),
+]

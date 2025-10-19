@@ -1,34 +1,28 @@
-use biome_css_syntax::{AnyCssDeclarationName, CssGenericProperty};
+use biome_css_syntax::CssGenericComponentValueList;
 
 use crate::diag::{CssPropertyDiagnostic, CssPropertyDiagnosticKind};
 
-use super::{padding::PaddingShorthand, value::PropertyValue, visibility::Visibility};
+use super::{
+    box_sizing::BoxSizing, clear::Clear, float::Float, padding::PaddingShorthand,
+    position::Position, value::TypedPropertyValue, visibility::Visibility,
+};
 
-pub fn parse_property(
-    property: &CssGenericProperty,
-) -> Result<PropertyValue, CssPropertyDiagnostic> {
-    let value = property.value();
-    let Some(name_token) = property.name().ok().and_then(|name| match name {
-        AnyCssDeclarationName::CssIdentifier(identifier) => identifier.value_token().ok(),
-        AnyCssDeclarationName::CssDashedIdentifier(identifier) => identifier.value_token().ok(),
-    }) else {
-        return Err(CssPropertyDiagnostic {
+pub fn parse_property_typed(
+    name: &str,
+    list: &CssGenericComponentValueList,
+) -> Result<TypedPropertyValue, CssPropertyDiagnostic> {
+    let normalized = name.to_ascii_lowercase();
+
+    match normalized.as_str() {
+        "padding" => PaddingShorthand::parse(list).map(TypedPropertyValue::Padding),
+        "visibility" => Visibility::parse(list).map(TypedPropertyValue::Visibility),
+        "position" => Position::parse(list).map(TypedPropertyValue::Position),
+        "float" => Float::parse(list).map(TypedPropertyValue::Float),
+        "clear" => Clear::parse(list).map(TypedPropertyValue::Clear),
+        "box-sizing" => BoxSizing::parse(list).map(TypedPropertyValue::BoxSizing),
+        _ => Err(CssPropertyDiagnostic {
             kind: CssPropertyDiagnosticKind::UnknownProperty,
             range: None,
-        });
-    };
-
-    let range = name_token.text_trimmed_range();
-    let name = name_token.text_trimmed();
-
-    if name.eq_ignore_ascii_case("visibility") {
-        Visibility::parse(&value)
-    } else if name.eq_ignore_ascii_case("padding") {
-        PaddingShorthand::parse(&value)
-    } else {
-        Err(CssPropertyDiagnostic {
-            kind: CssPropertyDiagnosticKind::UnknownProperty,
-            range: Some(range),
-        })
+        }),
     }
 }
