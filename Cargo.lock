@@ -419,6 +419,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "biome_css_typed"
+version = "0.1.0"
+dependencies = [
+ "biome_css_syntax",
+ "biome_diagnostics",
+ "biome_text_size",
+]
+
+[[package]]
 name = "biome_deserialize"
 version = "0.6.0"
 dependencies = [
