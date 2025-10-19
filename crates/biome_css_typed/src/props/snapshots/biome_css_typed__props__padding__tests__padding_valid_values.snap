@@ -1,0 +1,133 @@
+---
+source: crates/biome_css_typed/src/props/padding.rs
+assertion_line: 143
+expression: results
+---
+[
+    Ok(
+        PaddingShorthand(
+            PaddingShorthand(
+                Box4 {
+                    top: Length(
+                        Length {
+                            value: 10.0,
+                            unit: Px,
+                        },
+                    ),
+                    right: Length(
+                        Length {
+                            value: 10.0,
+                            unit: Px,
+                        },
+                    ),
+                    bottom: Length(
+                        Length {
+                            value: 10.0,
+                            unit: Px,
+                        },
+                    ),
+                    left: Length(
+                        Length {
+                            value: 10.0,
+                            unit: Px,
+                        },
+                    ),
+                },
+            ),
+        ),
+    ),
+    Ok(
+        PaddingShorthand(
+            PaddingShorthand(
+                Box4 {
+                    top: Length(
+                        Length {
+                            value: 10.0,
+                            unit: Px,
+                        },
+                    ),
+                    right: Percentage(
+                        Percentage(
+                            20.0,
+                        ),
+                    ),
+                    bottom: Length(
+                        Length {
+                            value: 10.0,
+                            unit: Px,
+                        },
+                    ),
+                    left: Percentage(
+                        Percentage(
+                            20.0,
+                        ),
+                    ),
+                },
+            ),
+        ),
+    ),
+    Ok(
+        PaddingShorthand(
+            PaddingShorthand(
+                Box4 {
+                    top: Length(
+                        Length {
+                            value: 1.0,
+                            unit: Em,
+                        },
+                    ),
+                    right: Length(
+                        Length {
+                            value: 2.0,
+                            unit: Em,
+                        },
+                    ),
+                    bottom: Length(
+                        Length {
+                            value: 3.0,
+                            unit: Em,
+                        },
+                    ),
+                    left: Length(
+                        Length {
+                            value: 2.0,
+                            unit: Em,
+                        },
+                    ),
+                },
+            ),
+        ),
+    ),
+    Ok(
+        PaddingShorthand(
+            PaddingShorthand(
+                Box4 {
+                    top: Length(
+                        Length {
+                            value: 1.0,
+                            unit: Px,
+                        },
+                    ),
+                    right: Length(
+                        Length {
+                            value: 2.0,
+                            unit: Px,
+                        },
+                    ),
+                    bottom: Length(
+                        Length {
+                            value: 3.0,
+                            unit: Px,
+                        },
+                    ),
+                    left: Length(
+                        Length {
+                            value: 4.0,
+                            unit: Px,
+                        },
+                    ),
+                },
+            ),
+        ),
+    ),
+]

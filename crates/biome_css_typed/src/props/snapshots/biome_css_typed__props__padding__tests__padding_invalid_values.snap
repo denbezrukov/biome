@@ -1,0 +1,31 @@
+---
+source: crates/biome_css_typed/src/props/padding.rs
+assertion_line: 149
+expression: results
+---
+[
+    Err(
+        CssPropertyDiagnostic {
+            kind: InvalidValue,
+            range: Some(
+                13..17,
+            ),
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: UnexpectedToken,
+            range: Some(
+                17..21,
+            ),
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: InvalidValue,
+            range: Some(
+                13..20,
+            ),
+        },
+    ),
+]
