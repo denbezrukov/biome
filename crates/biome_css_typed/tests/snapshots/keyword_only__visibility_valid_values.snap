@@ -1,5 +1,6 @@
 ---
-source: crates/biome_css_typed/tests/visibility.rs
+source: crates/biome_css_typed/tests/keyword_only.rs
+assertion_line: 23
 expression: results
 ---
 [

@@ -8,15 +8,13 @@ use crate::values::r#box::Box4;
 use crate::values::parse_length_percentage::parse_length_percentage;
 use crate::values::percent::LengthPercentage;
 
-use super::value::PropertyValue;
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct PaddingShorthand(pub Box4<LengthPercentage>);
 
 impl PaddingShorthand {
     pub fn parse(
         value: &CssGenericComponentValueList,
-    ) -> Result<PropertyValue, CssPropertyDiagnostic> {
+    ) -> Result<PaddingShorthand, CssPropertyDiagnostic> {
         let mut cur = CssGenericComponentValueCursor::new(value);
         let mut values = Vec::with_capacity(4);
 
@@ -71,6 +69,6 @@ impl PaddingShorthand {
 
         let shorthand = Box4::new(values).expect("padding expects between 1 and 4 values");
 
-        Ok(PropertyValue::PaddingShorthand(PaddingShorthand(shorthand)))
+        Ok(PaddingShorthand(shorthand))
     }
 }

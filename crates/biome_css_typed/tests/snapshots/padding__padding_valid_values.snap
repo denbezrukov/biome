@@ -1,10 +1,11 @@
 ---
 source: crates/biome_css_typed/tests/padding.rs
+assertion_line: 20
 expression: results
 ---
 [
     Ok(
-        PaddingShorthand(
+        Padding(
             PaddingShorthand(
                 Box4 {
                     top: Length(
@@ -21,7 +22,7 @@ expression: results
         ),
     ),
     Ok(
-        PaddingShorthand(
+        Padding(
             PaddingShorthand(
                 Box4 {
                     top: Length(
@@ -44,7 +45,7 @@ expression: results
         ),
     ),
     Ok(
-        PaddingShorthand(
+        Padding(
             PaddingShorthand(
                 Box4 {
                     top: Length(
@@ -75,7 +76,7 @@ expression: results
         ),
     ),
     Ok(
-        PaddingShorthand(
+        Padding(
             PaddingShorthand(
                 Box4 {
                     top: Length(
