@@ -1,3 +1,5 @@
+pub mod ext;
+
 use std::iter::Peekable;
 
 use biome_css_syntax::{AnyCssGenericComponentValue, CssGenericComponentValueList, CssLanguage};
