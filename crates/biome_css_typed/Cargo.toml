@@ -16,7 +16,13 @@ version              = "0.1.0"
 [dependencies]
 biome_css_syntax  = { workspace = true }
 biome_diagnostics = { workspace = true }
+biome_rowan       = { workspace = true }
 biome_text_size   = { workspace = true }
+biome_string_case = { workspace = true }
+
+[dev-dependencies]
+biome_css_parser = { workspace = true }
+insta             = { workspace = true }
 
 [lints]
 workspace = true

@@ -1,0 +1,21 @@
+---
+source: crates/biome_css_typed/src/props/visibility.rs
+expression: results
+---
+[
+    Ok(
+        Visibility(
+            Visible,
+        ),
+    ),
+    Ok(
+        Visibility(
+            Hidden,
+        ),
+    ),
+    Ok(
+        Visibility(
+            Collapse,
+        ),
+    ),
+]
