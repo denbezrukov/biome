@@ -422,9 +422,13 @@ dependencies = [
 name = "biome_css_typed"
 version = "0.1.0"
 dependencies = [
+ "biome_css_parser",
  "biome_css_syntax",
  "biome_diagnostics",
+ "biome_rowan",
+ "biome_string_case",
  "biome_text_size",
+ "insta",
 ]
 
 [[package]]

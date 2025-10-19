@@ -1,0 +1,36 @@
+---
+source: crates/biome_css_typed/src/props/visibility.rs
+expression: results
+---
+[
+    Err(
+        CssPropertyDiagnostic {
+            kind: InvalidValue,
+            range: None,
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: InvalidValue,
+            range: Some(
+                16..23,
+            ),
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: UnexpectedToken,
+            range: Some(
+                24..30,
+            ),
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: UnexpectedToken,
+            range: Some(
+                25..31,
+            ),
+        },
+    ),
+]
