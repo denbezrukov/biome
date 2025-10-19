@@ -1,11 +1,10 @@
-use biome_css_syntax::CssGenericComponentValueList;
+use biome_css_syntax::CssGenericProperty;
 
 use crate::diag::CssPropertyDiagnostic;
 use crate::props::{dispatch, value::PropertyValue};
 
 pub fn parse_property_typed(
-    name: &str,
-    value: &CssGenericComponentValueList,
+    property: &CssGenericProperty,
 ) -> Result<PropertyValue, CssPropertyDiagnostic> {
-    dispatch::parse_property(name, value)
+    dispatch::parse_property(property)
 }
