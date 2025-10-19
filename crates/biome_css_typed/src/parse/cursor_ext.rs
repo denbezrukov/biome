@@ -1,6 +1,4 @@
-use biome_css_syntax::AnyCssGenericComponentValue;
-
-use crate::CssGenericComponentValueCursor;
+use crate::parse::CssGenericComponentValueCursor;
 use crate::parse::ext::CssNodeExt;
 
 impl CssGenericComponentValueCursor {
@@ -13,19 +11,6 @@ impl CssGenericComponentValueCursor {
                 break;
             }
         }
-    }
-
-    /// Peek next non-delimiter node by reference, without consuming.
-    pub fn peek_nd_ref(&self) -> Option<&AnyCssGenericComponentValue> {
-        let mut iter = self.clone();
-        while let Some(node) = iter.peek() {
-            if node.is_delim() {
-                iter.bump();
-            } else {
-                return Some(node);
-            }
-        }
-        None
     }
 
     /// Save current cursor position for backtracking.
