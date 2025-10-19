@@ -1,0 +1,21 @@
+[package]
+authors.workspace    = true
+categories.workspace = true
+description          = "Typed CSS property parser and analyzer for Biome"
+edition.workspace    = true
+homepage.workspace   = true
+keywords.workspace   = true
+license.workspace    = true
+name                 = "biome_css_typed"
+publish              = true
+repository.workspace = true
+version              = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+biome_css_syntax  = { workspace = true }
+biome_diagnostics = { workspace = true }
+
+[lints]
+workspace = true
