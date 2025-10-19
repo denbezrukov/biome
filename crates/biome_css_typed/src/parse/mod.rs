@@ -1,3 +1,4 @@
+pub mod cursor_ext;
 pub mod ext;
 
 use std::iter::Peekable;
