@@ -1,6 +1,7 @@
 use biome_css_syntax::CssGenericComponentValueList;
 
 use crate::diag::CssPropertyDiagnostic;
+use crate::parse::ext::CssNodeExt;
 
 use super::keyword::parse_keyword;
 
@@ -13,9 +14,9 @@ pub enum BoxSizing {
 impl BoxSizing {
     pub fn parse(value: &CssGenericComponentValueList) -> Result<BoxSizing, CssPropertyDiagnostic> {
         parse_keyword(value, |ident| {
-            if ident.eq_ignore_ascii_case("content-box") {
+            if ident.ident_eq_ascii("content-box") {
                 Some(BoxSizing::ContentBox)
-            } else if ident.eq_ignore_ascii_case("border-box") {
+            } else if ident.ident_eq_ascii("border-box") {
                 Some(BoxSizing::BorderBox)
             } else {
                 None

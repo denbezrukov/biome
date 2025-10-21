@@ -1,15 +1,15 @@
-use biome_css_syntax::CssGenericComponentValueList;
-use biome_rowan::AstNode;
+use biome_css_syntax::{AnyCssGenericComponentValue, CssGenericComponentValueList};
 
 use crate::diag::{CssPropertyDiagnostic, CssPropertyDiagnosticKind};
 use crate::parse::CssGenericComponentValueCursor;
+use crate::parse::ext::CssNodeExt;
 
 pub(super) fn parse_keyword<T, F>(
     list: &CssGenericComponentValueList,
     map: F,
 ) -> Result<T, CssPropertyDiagnostic>
 where
-    F: Fn(&str) -> Option<T>,
+    F: Fn(&AnyCssGenericComponentValue) -> Option<T>,
 {
     let mut cursor = CssGenericComponentValueCursor::new(list);
 
@@ -20,26 +20,40 @@ where
             range: None,
         })?;
 
-    let token = first
+    let is_identifier = first
         .as_any_css_value()
-        .and_then(|value| value.as_css_identifier())
-        .and_then(|identifier| identifier.value_token().ok())
-        .ok_or_else(|| CssPropertyDiagnostic {
+        .map(|value| {
+            value
+                .as_css_identifier()
+                .and_then(|identifier| identifier.value_token().ok())
+                .is_some()
+                || value
+                    .as_css_custom_identifier()
+                    .and_then(|identifier| identifier.value_token().ok())
+                    .is_some()
+                || value
+                    .as_css_dashed_identifier()
+                    .and_then(|identifier| identifier.value_token().ok())
+                    .is_some()
+        })
+        .unwrap_or(false);
+
+    if !is_identifier {
+        return Err(CssPropertyDiagnostic {
             kind: CssPropertyDiagnosticKind::InvalidValue,
-            range: Some(first.range()),
-        })?;
+            range: first.range_opt(),
+        });
+    }
 
-    let ident = token.text_trimmed();
-
-    let keyword = map(ident).ok_or_else(|| CssPropertyDiagnostic {
+    let keyword = map(&first).ok_or_else(|| CssPropertyDiagnostic {
         kind: CssPropertyDiagnosticKind::InvalidValue,
-        range: Some(first.range()),
+        range: first.range_opt(),
     })?;
 
     if let Some(extra) = cursor.peek_non_delim() {
         return Err(CssPropertyDiagnostic {
             kind: CssPropertyDiagnosticKind::UnexpectedToken,
-            range: Some(extra.range()),
+            range: extra.range_opt(),
         });
     }
 
