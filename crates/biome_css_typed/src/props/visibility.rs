@@ -1,5 +1,7 @@
-use crate::diag::CssPropertyDiagnostic;
 use biome_css_syntax::CssGenericComponentValueList;
+
+use crate::diag::CssPropertyDiagnostic;
+use crate::parse::ext::CssNodeExt;
 
 use super::keyword::parse_keyword;
 
@@ -15,11 +17,11 @@ impl Visibility {
         value: &CssGenericComponentValueList,
     ) -> Result<Visibility, CssPropertyDiagnostic> {
         parse_keyword(value, |ident| {
-            if ident.eq_ignore_ascii_case("visible") {
+            if ident.ident_eq_ascii("visible") {
                 Some(Visibility::Visible)
-            } else if ident.eq_ignore_ascii_case("hidden") {
+            } else if ident.ident_eq_ascii("hidden") {
                 Some(Visibility::Hidden)
-            } else if ident.eq_ignore_ascii_case("collapse") {
+            } else if ident.ident_eq_ascii("collapse") {
                 Some(Visibility::Collapse)
             } else {
                 None
