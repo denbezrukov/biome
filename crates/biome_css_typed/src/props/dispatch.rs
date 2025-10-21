@@ -3,8 +3,9 @@ use biome_css_syntax::CssGenericComponentValueList;
 use crate::diag::{CssPropertyDiagnostic, CssPropertyDiagnosticKind};
 
 use super::{
-    box_sizing::BoxSizing, clear::Clear, float::Float, padding::PaddingShorthand,
-    position::Position, value::TypedPropertyValue, visibility::Visibility,
+    box_sizing::BoxSizing, clear::Clear, float::Float, margin::MarginShorthand,
+    padding::PaddingShorthand, position::Position, value::TypedPropertyValue,
+    visibility::Visibility,
 };
 
 pub fn parse_property_typed(
@@ -14,6 +15,7 @@ pub fn parse_property_typed(
     let normalized = name.to_ascii_lowercase();
 
     match normalized.as_str() {
+        "margin" => MarginShorthand::parse(list).map(TypedPropertyValue::Margin),
         "padding" => PaddingShorthand::parse(list).map(TypedPropertyValue::Padding),
         "visibility" => Visibility::parse(list).map(TypedPropertyValue::Visibility),
         "position" => Position::parse(list).map(TypedPropertyValue::Position),

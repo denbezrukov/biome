@@ -5,6 +5,7 @@ pub mod clear;
 pub mod dispatch;
 pub mod float;
 mod keyword;
+pub mod margin;
 pub mod padding;
 pub mod position;
 pub mod value;

@@ -1,0 +1,31 @@
+---
+source: crates/biome_css_typed/tests/margin.rs
+assertion_line: 38
+expression: results
+---
+[
+    Err(
+        CssPropertyDiagnostic {
+            kind: InvalidValue,
+            range: Some(
+                12..16,
+            ),
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: UnexpectedToken,
+            range: Some(
+                28..32,
+            ),
+        },
+    ),
+    Err(
+        CssPropertyDiagnostic {
+            kind: InvalidValue,
+            range: Some(
+                12..19,
+            ),
+        },
+    ),
+]
