@@ -1,0 +1,169 @@
+---
+source: crates/biome_css_typed/tests/margin.rs
+assertion_line: 28
+expression: results
+---
+[
+    Ok(
+        Margin(
+            MarginShorthand(
+                Box4 {
+                    top: Auto,
+                    right: None,
+                    bottom: None,
+                    left: None,
+                },
+            ),
+        ),
+    ),
+    Ok(
+        Margin(
+            MarginShorthand(
+                Box4 {
+                    top: LengthPercentage(
+                        Length(
+                            Length {
+                                value: 10.0,
+                                unit: Px,
+                            },
+                        ),
+                    ),
+                    right: None,
+                    bottom: None,
+                    left: None,
+                },
+            ),
+        ),
+    ),
+    Ok(
+        Margin(
+            MarginShorthand(
+                Box4 {
+                    top: LengthPercentage(
+                        Length(
+                            Length {
+                                value: 10.0,
+                                unit: Px,
+                            },
+                        ),
+                    ),
+                    right: Some(
+                        Auto,
+                    ),
+                    bottom: None,
+                    left: None,
+                },
+            ),
+        ),
+    ),
+    Ok(
+        Margin(
+            MarginShorthand(
+                Box4 {
+                    top: LengthPercentage(
+                        Length(
+                            Length {
+                                value: 1.0,
+                                unit: Em,
+                            },
+                        ),
+                    ),
+                    right: Some(
+                        LengthPercentage(
+                            Length(
+                                Length {
+                                    value: 2.0,
+                                    unit: Em,
+                                },
+                            ),
+                        ),
+                    ),
+                    bottom: Some(
+                        LengthPercentage(
+                            Length(
+                                Length {
+                                    value: 3.0,
+                                    unit: Em,
+                                },
+                            ),
+                        ),
+                    ),
+                    left: None,
+                },
+            ),
+        ),
+    ),
+    Ok(
+        Margin(
+            MarginShorthand(
+                Box4 {
+                    top: LengthPercentage(
+                        Length(
+                            Length {
+                                value: -4.0,
+                                unit: Px,
+                            },
+                        ),
+                    ),
+                    right: Some(
+                        LengthPercentage(
+                            Percentage(
+                                Percentage(
+                                    5.0,
+                                ),
+                            ),
+                        ),
+                    ),
+                    bottom: None,
+                    left: None,
+                },
+            ),
+        ),
+    ),
+    Ok(
+        Margin(
+            MarginShorthand(
+                Box4 {
+                    top: LengthPercentage(
+                        Length(
+                            Length {
+                                value: 1.0,
+                                unit: Px,
+                            },
+                        ),
+                    ),
+                    right: Some(
+                        LengthPercentage(
+                            Length(
+                                Length {
+                                    value: 2.0,
+                                    unit: Px,
+                                },
+                            ),
+                        ),
+                    ),
+                    bottom: Some(
+                        LengthPercentage(
+                            Length(
+                                Length {
+                                    value: 3.0,
+                                    unit: Px,
+                                },
+                            ),
+                        ),
+                    ),
+                    left: Some(
+                        LengthPercentage(
+                            Length(
+                                Length {
+                                    value: 4.0,
+                                    unit: Px,
+                                },
+                            ),
+                        ),
+                    ),
+                },
+            ),
+        ),
+    ),
+]
